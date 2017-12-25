@@ -50,7 +50,7 @@ public class FirebaseUtils
                         MapPoint pointToAdd = dataSnapshot.getValue(MapPoint.class);
 
                         // Delete if expired
-                        if (DateAndTimeUtils.checkIfUnixTimeIsExpired(pointToAdd.getExpiryUnixTime()))
+                        if (DateAndTimeUtils.INSTANCE.checkIfUnixTimeIsExpired(pointToAdd.getExpiryUnixTime()))
                         {
                             autoDeletePointData(key, pointToAdd.getPosterID());
                         } else
@@ -145,9 +145,9 @@ public class FirebaseUtils
         }
         String unit = (((Spinner) dialog.findViewById(R.id.unit_selection)).getSelectedItem().toString());
 
-        long currentCreatedTime = DateAndTimeUtils.getCurrentUnixTime();
+        long currentCreatedTime = DateAndTimeUtils.INSTANCE.getCurrentUnixTime();
         currentMapPoint.setCreatedUnixTime(currentCreatedTime);
-        currentMapPoint.setExpiryUnixTime(DateAndTimeUtils.addHoursToUnixTime(currentCreatedTime, hours));
+        currentMapPoint.setExpiryUnixTime(DateAndTimeUtils.INSTANCE.addHoursToUnixTime(currentCreatedTime, hours));
         currentMapPoint.setPosterID(mAuth.getCurrentUser().getUid());
         currentMapPoint.setUnit(unit);
         currentMapPoint.setQuantity(quantity);
@@ -254,7 +254,7 @@ public class FirebaseUtils
                 food_quantity.setText(String.valueOf(producerPoint.getQuantity()) + " " + producerPoint.getUnit());
 
                 TextView time_left = dialog.findViewById(R.id.remaining_time);
-                float intermediate_time = producerPoint.getExpiryUnixTime() - DateAndTimeUtils.getCurrentUnixTime();
+                float intermediate_time = producerPoint.getExpiryUnixTime() - DateAndTimeUtils.INSTANCE.getCurrentUnixTime();
 
                 // Converting Unix Time to hours; 3600000 is the factor to convert milliseconds to hours
                 intermediate_time = intermediate_time / 3600000;
@@ -323,7 +323,7 @@ public class FirebaseUtils
                             {
                                 throw new Exception();
                             }
-                            producerPoint.setExpiryUnixTime(DateAndTimeUtils.addHoursToUnixTime(producerPoint.getExpiryUnixTime(), (int) quantity));
+                            producerPoint.setExpiryUnixTime(DateAndTimeUtils.INSTANCE.addHoursToUnixTime(producerPoint.getExpiryUnixTime(), (int) quantity));
                             FirebaseUtils.updateMapPoint(geofireKey, producerPoint);
                             dialog.dismiss();
                         } catch (Exception e)
